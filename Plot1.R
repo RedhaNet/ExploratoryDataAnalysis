@@ -8,18 +8,13 @@ if (!file.exists('power_cons_zip')){
   }
 }
 
-powerData <- read.table('household_power_consumption.txt', sep = ';', header = F)
+powerData <- read.table('household_power_consumption.txt', sep = ';', header = T, stringsAsFactors=FALSE)
 
-newColNames <- paste(unlist(as.list(powerData[1,])))
+wantedData <- subset(powerData, Date %in% c('1/2/2007','2/2/2007'))
 
-colnames(powerData) <- newColNames
+global <- as.numeric(wantedData$Global_active_power)
 
-powerData <- powerData[-1,]
-
-powerData$Date <- as.Date(powerData$Date, "%d/%m/%Y")
-
-wantedData <- subset(powerData, Date == '2007-02-01' | Date == '2007-02-02')
-
-hist(as.numeric(wantedData$Global_active_power), breaks = 14, xaxt = 'n', col = 'red')
-axis(1, at=seq(0, 2880 , 2880/3), labels = seq(0, 6, 2))
+png("plot1.png", width=480, height=480)
+hist(global, col="red", main="Global Active Power", xlab="Global Active Power (kilowatts)")
+dev.off()
 
